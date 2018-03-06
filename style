@@ -1,11 +1,6 @@
-# This is Dan Allan's setting of Professor Robert Leheny's plotting style preferences.
-# Updated October 2014
-#
 # Invoke in Python matplotlib like so:
 #
 #     import matplotlib as mpl
-#
-#     mpl.style.use('https://gist.github.com/danielballan/be066529de85e87a5fe7/raw')
 #
 # This feature is only available in matplotlib version 1.4 or higher.
 
@@ -36,11 +31,11 @@ xtick.minor.pad: 20
 
 # Font sizes for various elements.
 font.size: 25
-axes.titlesize: 20
-axes.labelsize: 20
-xtick.labelsize: 20
-ytick.labelsize: 20
-legend.fontsize: 16
+axes.titlesize: 25
+axes.labelsize: 25
+xtick.labelsize: 25
+ytick.labelsize: 25
+legend.fontsize: 20
 
 # Use sans-serif LaTeX for all text.
 font.family: sans-serif
