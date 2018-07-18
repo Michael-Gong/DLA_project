@@ -43,8 +43,8 @@ font = {'family' : 'monospace',
 from_path = './Data/'
 px      = np.loadtxt(from_path+'px_0.txt')
 py      = np.loadtxt(from_path+'py_0.txt')
-pz 		= np.loadtxt(from_path+'pz_0.txt')
-gg 		= (px**2+py**2+pz**2+1.0)**0.5
+pz 	= np.loadtxt(from_path+'pz_0.txt')
+gg 	= (px**2+py**2+pz**2+1.0)**0.5
 grid_x  = np.loadtxt(from_path+'x_0.txt')
 grid_y  = np.loadtxt(from_path+'y_0.txt')
 grid_z  = np.loadtxt(from_path+'z_0.txt')
@@ -68,11 +68,12 @@ e_az    = (-part_ez-(e_vx*part_by-e_vy*part_bx)-e_vz*(-e_vx*part_ex-e_vy*part_ey
 
 #n_dirc  = np.array([0.,0.,1.])
 
-x_omega = np.logspace(0,6,100)
-y_theta = np.linspace(1,179,90)
-z_phi   = np.linspace(-179,179,180)
-data_I  = np.zeros([180,90,100])
-data_I_t= data_I
+x_omega = np.logspace(0,1,2)
+y_theta = np.linspace(0.,179.,180)/pi2d
+z_phi   = np.linspace(0.,0.,1)/pi2d
+data_I  = np.zeros([2,180,1])
+data_I_t= np.zeros([2,180,1])
+#data_I_t= data_I
 
 norm_fac=1.0/4/3.14/epsilon0*q0**2/4/3.14**2/v0*frequency/(m0*v0**2)
 ############ To calculate integral of the dI/domega##########
@@ -87,37 +88,41 @@ for i_phi in range(np.size(z_phi)):
         e_pos_t = np.array([grid_x[i_time], grid_y[i_time], grid_z[i_time]])
         e_tim_t = time_t[i_time]
         amplitude1 = np.cross(n_dirc,np.cross(n_dirc-e_vel_t,e_acc_t))/np.dot(1-np.dot(e_vel_t,n_dirc),1-np.dot(e_vel_t,n_dirc))
+        #print("amplitude_:",amplitude1)
         phase2     = (e_tim_t-np.dot(n_dirc,e_pos_t))*x_omega[i_omega]
         data_1     = data_1+dt*amplitude1*np.cos(phase2)
         data_2     = data_2+dt*amplitude1*np.sin(phase2)
-      data_I[i_phi][i_theta][i_omega]  = np.dot(data_1,data_1)+np.dot(data_2,data_2)
-      data_I_t[i_phi][i_theta][i_omega]= data_I[i_phi][i_theta][i_omega]*np.sin(y_theta[i_theta]) 
-      print('i_phi:',z_phi[i_phi],'i_theta:',y_theta[i_theta],'i_omega:',x_omega[i_omega],' ; dI/dw:',data_I[i_phi][i_theta][i_omega]*norm_fac)
+        #print('time: ',e_tim_t,'; data_1:',np.dot(data_1,data_1),'; data_2:',np.dot(data_2,data_2))
+        #print('time:',e_tim_t,'; vel_1:',e_vel_t[0],'; acc_1:',e_acc_t[0],'; pos_1:',e_pos_t[0])
+      data_I[i_omega][i_theta][i_phi]  = np.dot(data_1,data_1)+np.dot(data_2,data_2)
+      data_I_t[i_omega][i_theta][i_phi]= data_I[i_omega][i_theta][i_phi]*np.sin(y_theta[i_theta]) 
+      print('i_phi:',z_phi[i_phi],'i_theta:',y_theta[i_theta],'i_omega:',x_omega[i_omega],' ; dI/dw:',data_I[i_omega][i_theta][i_phi])
 #############################################################
 data_I = norm_fac*data_I
-data_I_t = norm_fac*data_I*(y_theta[-1]-y_theta[-2])*pi2d*(z_phi[-1]-z_phi[-2])*pi2d
+data_I_t = norm_fac*data_I_t
+#data_I_t = norm_fac*data_I*(y_theta[-1]-y_theta[-2])*(z_phi[-1]-z_phi[-2])
 
 np.savetxt('./Data/spectrum_z_phi.txt',z_phi)
 np.savetxt('./Data/spectrum_y_theta.txt',y_theta)
 np.savetxt('./Data/spectrum_x_omega.txt',x_omega)
-np.savetxt('./Data/spectrum_dI_dw_do.txt',data_I)
+#np.savetxt('./Data/spectrum_dI_dw_do.txt',data_I)
 np.savetxt('./Data/spectrum_dI_dw.txt',np.sum(np.sum(data_I_t,axis=0),axis=0))
 
-plt.plot(x_omega,np.sum(np.sum(data_I_t,axis=0),axis=0),'-b',linewidth=3)
+#plt.plot(x_omega,np.sum(np.sum(data_I_t,axis=0),axis=0),'-b',linewidth=3)
 #### manifesting colorbar, changing label and axis properties ####
-plt.grid(which='major',color='k', linestyle='--', linewidth=0.3)
-plt.xlabel('$\omega$ [$\omega_0$]',fontdict=font)
-plt.ylabel('dI/d$\omega$ [$m_ec^2/\omega_0$]',fontdict=font)
-plt.xticks(fontsize=20); plt.yticks(fontsize=20);
-plt.xscale('log')
-plt.yscale('log')
+#plt.grid(which='major',color='k', linestyle='--', linewidth=0.3)
+#plt.xlabel('$\omega$ [$\omega_0$]',fontdict=font)
+#plt.ylabel('dI/d$\omega$ [$m_ec^2/\omega_0$]',fontdict=font)
+#plt.xticks(fontsize=20); plt.yticks(fontsize=20);
+#plt.xscale('log')
+#plt.yscale('log')
 #plt.xlim(0,400)
 #plt.legend(loc='upper right',fontsize=16,framealpha=1.0)
 #plt.text(285,4e8,'t='+str(round(time/1.0e-15,0))+' fs',fontdict=font)
 #plt.subplots_adjust(left=0.2, bottom=None, right=0.88, top=None,wspace=None, hspace=None)
 
-fig = plt.gcf()
-fig.set_size_inches(10.0, 8.5)
-fig.savefig('./'+'spectral_dI_dw.png',format='png',dpi=160)
-plt.close("all")
+#fig = plt.gcf()
+#fig.set_size_inches(10.0, 8.5)
+#fig.savefig('./'+'spectral_dI_dw.png',format='png',dpi=160)
+#plt.close("all")
 
