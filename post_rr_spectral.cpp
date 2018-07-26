@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 	cout<<"magnetic field unit: "<< setprecision(24) << bxunit <<endl;
 	cout<<"density unit nc: "    << setprecision(24) << denunit<<endl;
     
-	int       data_size = 3999;
+	int       data_size = 4005;
     string    dataname ("./Data/");
     cout<<"here"<<endl;   
     double    px[data_size];    getdata1d(dataname+"px_0.txt", px, data_size);    
@@ -106,14 +106,16 @@ int main(int argc, char **argv)
 	}
     cout<<"here"<<endl;   
     
-    int       x_size=6001,  y_size=1,  z_size=1;
-    double    x_omega[x_size], y_theta[y_size], z_phi[z_size];
-	double    data_I[x_size][y_size][z_size], data_I_t[x_size][y_size][z_size];
+    const int x_size=601,  y_size=1,  z_size=360;
+    double* x_omega  = new double[x_size];
+    double* y_theta  = new double[y_size]; 
+    double* z_phi    = new double[z_size];
+    double  data_I[x_size][y_size][z_size];
     double    norm_fac=1.0/4.0/3.14/epsilon0*q0*q0/4.0/(3.14*3.14)/v0*frequency/(m0*v0*v0);
     cout<<"here"<<endl;   
     linspace(x_omega, 0., 6000., x_size);
-    linspace(y_theta, 0./pi2d, 0./pi2d, y_size);
-    linspace(z_phi,   0./pi2d, 0./pi2d, z_size);
+    linspace(y_theta, 90./pi2d, 90./pi2d, y_size);
+    linspace(z_phi,   0./pi2d, 359./pi2d, z_size);
     cout<<"here"<<endl;   
 //############ To calculate integral of the dI/domega##########
     Vector3 amplitude1, amplitude2;
@@ -123,7 +125,8 @@ int main(int argc, char **argv)
         for(int i_omega=0; i_omega<x_size; ++i_omega){
     //     cout<<"i_phi"<<z_phi[i_phi]<<endl;
 //	       Vector3 n_dirc( cos(y_theta[i_theta]), sin(y_theta[i_theta])*cos(z_phi[i_phi]), sin(y_theta[i_theta])*sin(z_phi[i_phi]) );
-               Vector3 n_dirc(1.0,0.0,0.0);
+	       Vector3 n_dirc( sin(y_theta[i_theta])*cos(z_phi[i_phi]), sin(y_theta[i_theta])*sin(z_phi[i_phi]), cos(y_theta[i_theta]) );
+  //             Vector3 n_dirc(1.0,0.0,0.0);
 	       //cout<<"n_dirc: x:"<<n_dirc.e1()<<"; y:"<<n_dirc.e2()<<"; z:"<<n_dirc.e3()<<endl;
 	       dt=timett[1]-timett[0]; 
                Vector3 data_1(0.0, 0.0, 0.0), data_2(0.0, 0.0, 0.0);
@@ -207,5 +210,8 @@ int main(int argc, char **argv)
 //	    {
 //			cout << i << "th :"<< e_field[i] <<endl;
 //		}
+    delete[] x_omega;
+    delete[] y_theta;
+    delete[] z_phi;
     return 0;
 }
