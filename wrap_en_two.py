@@ -73,8 +73,8 @@ if __name__ == '__main__':
 #    ax.plot(x1, y1, '--b', linewidth=3,label=r'$-J_x=\alpha(2\pi r/\lambda)^2J_A,\ \ \ \alpha=0.30$',zorder=1)
   data = sdf.read(from_path+'current'+str(n).zfill(4)+".sdf",dict=True)
   ex = data['Current/Jx_averaged'].data
-  Jx = np.sum(ex[:,abs(y)<2.4],1)*(1e-6/30)*6.4e-6/17e3
-  plt.plot(x, -Jx, '-b', linewidth=3,label='3D-PIC simulation')
+  Jx = np.sum(ex[:,abs(y)<1.6],1)*(1e-6/30)*6.4e-6/17e3
+  plt.plot(x, -Jx, '-b', linewidth=3,label='2D-PIC simulation')
   plt.xlim(-5,55)
   plt.xlabel('X [$\mu m$]',fontdict=font)
   plt.ylabel('$-J_x$ [$J_A$]',fontdict=font)

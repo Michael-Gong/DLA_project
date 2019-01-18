@@ -207,7 +207,7 @@ if __name__ == '__main__':
     ex = data['Current/Jx_averaged'].data/jalf/4/np.pi
     if dim == '3d':
         ex = (ex[:,:,n3d//2-1]+ex[:,:,n3d//2])/2.0
-    eee = 0.8
+    eee = 0.2
     levels = np.linspace(-eee, eee, 51)
     ex.T[ex.T < -eee]=-eee
     ex.T[ex.T >  eee]= eee
@@ -337,7 +337,7 @@ if __name__ == '__main__':
     if dim == '3d':
         ex = (ex[:,:,n3d//2-1]+ex[:,:,n3d//2])/2.0
     print(np.max(abs(ex)))
-    eee = 0.8
+    eee = 0.2
     levels = np.linspace(-eee, eee, 51)
     ex.T[ex.T < -eee]=-eee
     ex.T[ex.T >  eee]= eee
